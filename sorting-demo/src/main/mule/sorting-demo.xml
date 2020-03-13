@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="f13d4f04-7100-4831-888d-eb64b7118ac4" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<flow name="sorting-demo" doc:id="4d23b9bd-5e63-463d-8ab3-13586d730609" >
+		<http:listener doc:name="POST /employee" doc:id="bbc1a577-cefc-4666-81b7-2e190cacbd06" config-ref="HTTP_Listener_config" path="/employee" allowedMethods="POST"/>
+		<logger level="INFO" doc:name="Log employee Payload" doc:id="c833d234-dc02-4f3a-938a-aa27fb556764" message="#[payload]"/>
+		<ee:transform doc:name="Sort employee" doc:id="97f356d9-4c9f-4633-9c5a-1982862646e4" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+/* If score is same for two or more employees, then sorting will be done using the depId.
+ * Here, both score and depId is bring into same number format and then comparison done through order by
+ * 
+ * Check the input payload in the payload.json file in src/main/resources in project
+ */
+ 
+employees : (payload map(data, index) -> {
+	emplyeeName: data.name,
+	employeeScore: data.score,
+	employeeDepId: data.depID
+}) orderBy ($.employeeScore as String {format : "000000"}  ++ $.employeeDepId as String {format : "000000"})]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>

@@ -1,0 +1,22 @@
+[
+	{
+		"name": "Sachin",
+		"score": 1,
+		"depID": 10000
+	},
+	{
+		"name": "Ganguly",
+		"score": 94,
+		"depID": 45
+	},
+	{
+		"name": "Rahul",
+		"score": 94,
+		"depID": 9
+	},
+	{
+		"name": "Deepak",
+		"score": 94,
+		"depID": 5
+	}
+]
